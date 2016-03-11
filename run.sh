@@ -1,11 +1,4 @@
 #!/bin/sh -e
-./build.sh
-cd build/distributions
-unzip koupler-0.2.5-SNAPSHOT.zip
-cd koupler-0.2.5-SNAPSHOT
-tar -cv * > ../koupler-0.2.5-SNAPSHOT.tar
-cd ../../..
-
 # Only use sudo if there's no configured remote host
 if [ -n "${DOCKER_HOST}" ]
 then
@@ -14,5 +7,16 @@ else
 	PRE='sudo'
 fi
 
-${PRE} docker build -t koupler .
-${PRE} docker run --env-file=aws.env --rm -p=4567:${2} -it koupler -streamName "${1}" -http
+if ! [ -f aws.env ]
+then
+	echo "Please create an \"aws.env\" file with credentials"
+	exit 1
+fi
+
+if [ "$#" -ne 2 ]
+then
+	echo "Usage: ${0} PORT STREAM_NAME"
+	exit 1
+fi
+
+"${PRE}" docker run --env-file=aws.env --rm -p=4567:"${2}" -it koupler -streamName "${1}"

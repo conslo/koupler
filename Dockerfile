@@ -2,7 +2,7 @@ FROM java:8-jre
 
 WORKDIR /app
 
-ADD build/distributions/koupler-0.2.5-SNAPSHOT.tar ./
+ADD build/distributions/koupler.tar ./
 
-ENTRYPOINT ["./koupler.sh"]
+ENTRYPOINT ["./koupler.sh", "-http"]
 EXPOSE 4567
